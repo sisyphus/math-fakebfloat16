@@ -112,56 +112,62 @@ sub _fromIV {
 
 sub _fromNV {
   my $nv = shift;
-  my $ret = Rmpfr_init2(bf16_MANTBITS);
-  my ($emin_orig, $emax_orig) = (Rmpfr_get_emin(), Rmpfr_get_emax());
-  SET_EMIN_EMAX(bf16_EMIN, bf16_EMAX);
-  my $inex = Rmpfr_set_NV($ret, $nv, MPFR_RNDN);
-  Rmpfr_subnormalize($ret, $inex, MPFR_RNDN);
-  RESET_EMIN_EMAX($emin_orig, $emax_orig);
+  #my $ret = Rmpfr_init2(bf16_MANTBITS);
+  #my ($emin_orig, $emax_orig) = (Rmpfr_get_emin(), Rmpfr_get_emax());
+  #SET_EMIN_EMAX(bf16_EMIN, bf16_EMAX);
+  #my $inex = Rmpfr_set_NV($ret, $nv, MPFR_RNDN);
+  #Rmpfr_subnormalize($ret, $inex, MPFR_RNDN);
+  #RESET_EMIN_EMAX($emin_orig, $emax_orig);
+  my $ret = subnormalize_bfloat16($nv);
   return bless(\$ret);
 }
 
 sub _fromMPFR {
   my $mpfr = shift;
-  my $ret = Rmpfr_init2(bf16_MANTBITS);
-  my ($emin_orig, $emax_orig) = (Rmpfr_get_emin(), Rmpfr_get_emax());
-  SET_EMIN_EMAX(bf16_EMIN, bf16_EMAX);
-  my $inex = Rmpfr_strtofr($ret, "$mpfr", 10, MPFR_RNDN);
-  Rmpfr_subnormalize($ret, $inex, MPFR_RNDN);
-  RESET_EMIN_EMAX($emin_orig, $emax_orig);
+  #my $ret = Rmpfr_init2(bf16_MANTBITS);
+  #my ($emin_orig, $emax_orig) = (Rmpfr_get_emin(), Rmpfr_get_emax());
+  #SET_EMIN_EMAX(bf16_EMIN, bf16_EMAX);
+  #my $inex = Rmpfr_strtofr($ret, "$mpfr", 10, MPFR_RNDN);
+  #Rmpfr_subnormalize($ret, $inex, MPFR_RNDN);
+  #RESET_EMIN_EMAX($emin_orig, $emax_orig);
+  my $ret = subnormalize_bfloat16($mpfr);
   return bless(\$ret);
 }
 
 sub _fromGMPf {
   my $mpf = shift;
-  my $ret = Rmpfr_init2(bf16_MANTBITS);
-  my ($emin_orig, $emax_orig) = (Rmpfr_get_emin(), Rmpfr_get_emax());
-  SET_EMIN_EMAX(bf16_EMIN, bf16_EMAX);
-  my $inex = Rmpfr_set_f($ret, $mpf, MPFR_RNDN);
-  Rmpfr_subnormalize($ret, $inex, MPFR_RNDN);
-  RESET_EMIN_EMAX($emin_orig, $emax_orig);
+  #my $ret = Rmpfr_init2(bf16_MANTBITS);
+  #my ($emin_orig, $emax_orig) = (Rmpfr_get_emin(), Rmpfr_get_emax());
+  #SET_EMIN_EMAX(bf16_EMIN, bf16_EMAX);
+  #my $inex = Rmpfr_set_f($ret, $mpf, MPFR_RNDN);
+  #Rmpfr_subnormalize($ret, $inex, MPFR_RNDN);
+  #RESET_EMIN_EMAX($emin_orig, $emax_orig);
+  my $ret = subnormalize_bfloat16($mpf);
   return bless(\$ret);
 }
 
 sub _fromGMPq {
   my $mpq = shift;
-  my $ret = Rmpfr_init2(bf16_MANTBITS);
-  my ($emin_orig, $emax_orig) = (Rmpfr_get_emin(), Rmpfr_get_emax());
-  SET_EMIN_EMAX(bf16_EMIN, bf16_EMAX);
-  my $inex = Rmpfr_set_q($ret, $mpq, MPFR_RNDN);
-  Rmpfr_subnormalize($ret, $inex, MPFR_RNDN);
-  RESET_EMIN_EMAX($emin_orig, $emax_orig);
+  #my $ret = Rmpfr_init2(bf16_MANTBITS);
+  #my ($emin_orig, $emax_orig) = (Rmpfr_get_emin(), Rmpfr_get_emax());
+  #SET_EMIN_EMAX(bf16_EMIN, bf16_EMAX);
+  #my $inex = Rmpfr_set_q($ret, $mpq, MPFR_RNDN);
+  #Rmpfr_subnormalize($ret, $inex, MPFR_RNDN);
+  #RESET_EMIN_EMAX($emin_orig, $emax_orig);
+  my $ret = subnormalize_bfloat16($mpq);
   return bless(\$ret);
 }
 
 sub _fromBfloat16 {
   my $bf16 = shift;
   my $ret = Rmpfr_init2(bf16_MANTBITS);
-  my ($emin_orig, $emax_orig) = (Rmpfr_get_emin(), Rmpfr_get_emax());
-  SET_EMIN_EMAX(bf16_EMIN, bf16_EMAX);
+  #my ($emin_orig, $emax_orig) = (Rmpfr_get_emin(), Rmpfr_get_emax());
+  #SET_EMIN_EMAX(bf16_EMIN, bf16_EMAX);
+  #my $inex = Rmpfr_set($ret, $$bf16, MPFR_RNDN);
+  #Rmpfr_subnormalize($ret, $inex, MPFR_RNDN);
+  #RESET_EMIN_EMAX($emin_orig, $emax_orig);
   my $inex = Rmpfr_set($ret, $$bf16, MPFR_RNDN);
-  Rmpfr_subnormalize($ret, $inex, MPFR_RNDN);
-  RESET_EMIN_EMAX($emin_orig, $emax_orig);
+  die "Error in assignment" if $inex;
   return bless(\$ret);
 }
 
