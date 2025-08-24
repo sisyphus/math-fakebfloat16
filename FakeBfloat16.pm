@@ -82,15 +82,19 @@ sub new {
    die "Too many args given to new()" if @_ > 1;
    my $itsa = _itsa($_[0]);
    if($itsa) {
-     my $coderef = $Math::FakeBfloat16::handler{$itsa};
-     return $coderef->($_[0]);
-   }
+     return _fromIV($_[0]) if($itsa == 2);
+     return _fromBfloat16($_[0]) if ($itsa == 30);
+     my $ret = subnormalize_generic($_[0], bf16_EMIN, bf16_EMAX, bf16_MANTBITS);
+     return bless(\$ret);
+   #  my $coderef = $Math::FakeBfloat16::handler{$itsa};
+   #  return $coderef->($_[0]);
+    }
    die "Unrecognized 1st argument passed to new() function";
 }
 
 sub _fromPV {
   my $pv = shift;
-  my $ret = subnormalize_bfloat16($pv);
+  my $ret = subnormalize_generic($pv, bf16_EMIN, bf16_EMAX, bf16_MANTBITS);
   return bless(\$ret);
 }
 
@@ -103,25 +107,25 @@ sub _fromIV {
 
 sub _fromNV {
   my $nv = shift;
-  my $ret = subnormalize_bfloat16($nv);
+  my $ret = subnormalize_generic($nv, bf16_EMIN, bf16_EMAX, bf16_MANTBITS);
   return bless(\$ret);
 }
 
 sub _fromMPFR {
   my $mpfr = shift;
-  my $ret = subnormalize_bfloat16($mpfr);
+  my $ret = subnormalize_generic($mpfr, bf16_EMIN, bf16_EMAX, bf16_MANTBITS);
   return bless(\$ret);
 }
 
 sub _fromGMPf {
   my $mpf = shift;
-  my $ret = subnormalize_bfloat16($mpf);
+  my $ret = subnormalize_generic($mpf, bf16_EMIN, bf16_EMAX, bf16_MANTBITS);
   return bless(\$ret);
 }
 
 sub _fromGMPq {
   my $mpq = shift;
-  my $ret = subnormalize_bfloat16($mpq);
+  my $ret = subnormalize_generic($mpq, bf16_EMIN, bf16_EMAX, bf16_MANTBITS);
   return bless(\$ret);
 }
 
