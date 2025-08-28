@@ -483,6 +483,8 @@ sub bf16_nextbelow {
 }
 
 sub unpack_bf16_hex {
+  die "Math::FakeBfloat16::unpack_bf16_hex() accepts only a Math::FakeBfloat16 object as its argument"
+    unless ref($_[0]) eq "Math::FakeBfloat16";
   my $nv = Rmpfr_get_NV(${$_[0]}, MPFR_RNDN);
   my @ret = _unpack_float($nv);
   return join('', @ret);
