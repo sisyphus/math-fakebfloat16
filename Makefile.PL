@@ -3,13 +3,6 @@ use warnings;
 use Config;
 use ExtUtils::MakeMaker;
 
-eval{ require 5.032;};
-
-if($@) {
-  warn "\n Aborting build of Math::FakeBfloat16 because:\n$@\n";
-  exit 0;
-}
-
 my $defines = $Config::Config{byteorder} =~ /^1234/ ? " -DWE_HAVE_LENDIAN" : " -DWE_HAVE_BENDIAN";
 
 my %options = (
