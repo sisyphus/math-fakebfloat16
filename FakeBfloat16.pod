@@ -37,8 +37,8 @@
   and then assign it to a Math::FakeBfloat16 object, the  value can
   be rounded twice. In the following example the value is firstly
   rounded to an NV, and secondly from the NV to the 8-bit
-  precision Math::FakeBfloat16 object. EXAMPLE (assumes that the NV
-  is of type 'double'):
+  precision Math::FakeBfloat16 object. EXAMPLE (when $Config{nvtype}
+  is 'double'):
 
    my $pv = '1.96500000000000014e2';
    my $nv =  1.96500000000000014e2 ;
@@ -49,7 +49,7 @@
 
  The __bf16 has only 8 bits of precision.
  Maximum finite value is 3.39e38.
- Minimum positive non-zero value is 9.184-41.
+ Minimum positive non-zero value is 9.184e-41.
 
 =head1 ASSIGNMENT FUNCTIONS
 
