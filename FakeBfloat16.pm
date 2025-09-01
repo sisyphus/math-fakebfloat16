@@ -38,7 +38,7 @@ require Exporter;
 *import = \&Exporter::import;
 require DynaLoader;
 
-$Math::FakeBfloat16::VERSION = '0.01';
+$Math::FakeBfloat16::VERSION = '0.02';
 Math::FakeBfloat16->DynaLoader::bootstrap($Math::FakeBfloat16::VERSION);
 
 sub dl_load_flags {0} # Prevent DynaLoader from complaining and croaking
