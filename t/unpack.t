@@ -73,11 +73,63 @@ cmp_ok(unpack_bf16_hex(Math::FakeBfloat16->new(Math::MPFR->new('-5e-41'))), 'eq'
   cmp_ok(unpack_bf16_hex($inc), 'eq', 'FF80', " -inf unpacks to FF80");
   cmp_ok(unpack_bf16_hex($dec), 'eq', '7F80', "+inf unpacks to 7F80");
 
+  my $pack = pack_bf16_hex('0000');
+  cmp_ok(ref($pack), 'eq', "Math::FakeBfloat16", "'0000': pack returns Math::FakeBfloat16 object");
+  cmp_ok(is_bf16_zero($pack), '==', 1, "returns 0 as expected");
+
+  $pack = pack_bf16_hex('8000');
+  cmp_ok(ref($pack), 'eq', "Math::FakeBfloat16", "'8000': pack returns Math::FakeBfloat16 object");
+  cmp_ok(is_bf16_zero($pack), '==', -1, "returns -0 as expected");
+
   for(1..2060) {
     bf16_nextabove($inc);
     bf16_nextbelow($dec);
     my $unpack_inc = unpack_bf16_hex($inc);
+    my $pack_inc = pack_bf16_hex($unpack_inc);
+    cmp_ok($pack_inc, '==', $inc, "$unpack_inc: round_trip ok");
+
     my $unpack_dec = unpack_bf16_hex($dec);
+    my $pack_dec = pack_bf16_hex($unpack_dec);
+    cmp_ok($pack_dec, '==', $dec, "$unpack_dec: round_trip ok");
+
+    cmp_ok(length($unpack_inc), '==', 4, "length($unpack_inc) == 4");
+    cmp_ok(length($unpack_dec), '==', 4, "length($unpack_inc) == 4");
+
+    Math::MPFR::Rmpfr_strtofr($mpfr_dec, $unpack_dec, 16, $rnd);
+    cmp_ok($mpfr_store - $mpfr_dec, '==', 1, "dec has been decremented to $unpack_dec");
+    Math::MPFR::Rmpfr_strtofr($mpfr_inc, $unpack_inc, 16, $rnd);
+    cmp_ok($mpfr_inc - $mpfr_dec, '==', 0x8000, "inc has been incremented to $unpack_inc");
+
+    Math::MPFR::Rmpfr_set($mpfr_store, $mpfr_dec, $rnd);
+  }
+}
+
+{
+  my $inc = Math::FakeBfloat16->new('-inf');
+  my $dec = Math::FakeBfloat16->new('inf');
+
+  cmp_ok(is_bf16_inf($inc), '==', -1, "is -inf as expected");
+  cmp_ok(is_bf16_inf($dec), '==', 1, "is +inf as expected");
+
+  my $mpfr_inc   = Math::MPFR::Rmpfr_init2(16);
+  my $mpfr_dec   = Math::MPFR::Rmpfr_init2(16);
+  my $mpfr_store = Math::MPFR::Rmpfr_init2(16);
+  my $rnd = 0; # Round to nearest, ties to even.
+  Math::MPFR::Rmpfr_strtofr($mpfr_store, '7F80', 16, $rnd); # Infinity, as is $dec
+
+  cmp_ok(unpack_bf16_hex($inc), 'eq', 'FF80', " -inf unpacks to FF80");
+  cmp_ok(unpack_bf16_hex($dec), 'eq', '7F80', "+inf unpacks to 7F80");
+
+  for(1..2060) {
+    bf16_nextabove($inc);
+    bf16_nextbelow($dec);
+    my $unpack_inc = unpack_bf16_hex($inc);
+    my $pack_inc = pack_bf16_hex($unpack_inc);
+    cmp_ok($pack_inc, '==', $inc, "$unpack_inc: round_trip ok");
+
+    my $unpack_dec = unpack_bf16_hex($dec);
+    my $pack_dec = pack_bf16_hex($unpack_dec);
+    cmp_ok($pack_dec, '==', $dec, "$unpack_dec: round_trip ok");
 
     cmp_ok(length($unpack_inc), '==', 4, "length($unpack_inc) == 4");
     cmp_ok(length($unpack_dec), '==', 4, "length($unpack_inc) == 4");
